@@ -1,6 +1,6 @@
 const os = require('os');
 const qrcode = require('qrcode-terminal');
-const { Client, MessageMedia } = require('whatsapp-web.js');
+const { Client, MessageMedia, LocalAuth } = require('whatsapp-web.js'); // Adicione LocalAuth aqui
 const fs = require('fs');
 const path = require('path');
 
@@ -152,30 +152,33 @@ class WhatsAppBot {
         }
         throw new Error(`Chrome não encontrado para a plataforma: ${plataforma}`);
     }
-
+    
     async inicializarBot() {
         try {
             this.client = new Client({
-                puppeteer: {
-                    executablePath: this.chromePath,
-                    headless: true,
-                    args: [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-dev-shm-usage',
-                        '--disable-gpu',
-                        '--remote-debugging-port=9222',
-                        '--max-memory=512M'
-                    ]
-                },
-                webVersionCache: { type: 'none' },
-                restartOnAuthFail: true
-            });
-            this.configurarHandlers();
-            await this.client.initialize();
+                authStrategy: new LocalAuth({ clientId: "chatmilly3" }), // Substitua X por 3, 4 ou 5 em cada bot
+            puppeteer: {
+                executablePath: this.chromePath,
+                headless: true,
+                args: [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--remote-debugging-port=9222',
+                    '--max-memory=512M'
+                ],
+                userDataDir: path.join(__dirname, 'sessions') // Pasta única por bot
+            },
+            webVersionCache: { type: 'none' },
+            restartOnAuthFail: true
+        });
+
+        this.configurarHandlers();
+        await this.client.initialize();
         } catch (erro) {
-            this.logger.error('Erro ao inicializar o bot:', erro);
-            process.exit(1);
+        this.logger.error('Erro ao inicializar o bot:', erro);
+        process.exit(1);
         }
     }
 
