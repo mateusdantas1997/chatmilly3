@@ -168,7 +168,6 @@ class WhatsAppBot {
                     '--remote-debugging-port=9222',
                     '--max-memory=512M'
                 ],
-                userDataDir: path.join(__dirname, 'sessions') // Pasta única por bot
             },
             webVersionCache: { type: 'none' },
             restartOnAuthFail: true
