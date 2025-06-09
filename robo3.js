@@ -137,49 +137,13 @@ class WhatsAppBot {
         this.logger = new Logger();
         this.gerenciadorEstado = new GerenciadorEstado();
         this.gerenciadorMidia = new GerenciadorMidia(this.logger);
-        this.chromePath = this.obterCaminhoChromeDriver();
         this.inicializarBot();
-    }
-
-    obterCaminhoChromeDriver() {
-        const plataforma = os.platform();
-        const caminhos = {
-            win32: [
-                path.join(process.env.LOCALAPPDATA || '', 'Google/Chrome/Application/chrome.exe'),
-                path.join(process.env['PROGRAMFILES(X86)'] || '', 'Google/Chrome/Application/chrome.exe'),
-                path.join(process.env.PROGRAMFILES || '', 'Google/Chrome/Application/chrome.exe'),
-                'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-                'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-            ],
-            darwin: ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'],
-            linux: [
-                '/usr/bin/google-chrome',
-                '/usr/bin/chrome',
-                '/usr/bin/chromium-browser',
-                '/usr/bin/chromium',
-                '/snap/bin/google-chrome',
-                '/opt/google/chrome/google-chrome',
-                '/root/Projects/chatmilly/chrome-linux/chrome'
-            ]
-        };
-        const possiveisCaminhos = caminhos[plataforma] || [];
-        for (const caminhoBrowser of possiveisCaminhos) {
-            try {
-                if (fs.existsSync(caminhoBrowser)) {
-                    return caminhoBrowser;
-                }
-            } catch (erro) {
-                continue;
-            }
-        }
-        throw new Error(`Chrome não encontrado para a plataforma: ${plataforma}`);
     }
 
     async inicializarBot() {
         try {
             this.client = new Client({
                 puppeteer: {
-                    executablePath: this.chromePath,
                     headless: true,
                     args: [
                         '--no-sandbox',
@@ -378,6 +342,7 @@ class WhatsAppBot {
     }
 
     // Estágios do Funil
+
     async processarEstagioInicial(idUsuario, msg, chat) {
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
         this.gerenciadorEstado.marcarMensagemEnviada(idUsuario, 'initial');
