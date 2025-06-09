@@ -239,7 +239,7 @@ class WhatsAppBot {
 
             // Verificar se a mensagem contém palavras-chave sobre onde você mora
             const mensagemTexto = msg.body.toLowerCase();
-            const palavrasChaveLocalizacao = ['onde', 'moras', 'mora', 'joão pessoa', 'pb'];
+            const palavrasChaveLocalizacao = ['moras', 'mora', 'joão pessoa', 'pb'];
             const ehPerguntaSobreLocalizacao = palavrasChaveLocalizacao.some(palavra => mensagemTexto.includes(palavra));
 
             if (ehPerguntaSobreLocalizacao) {
